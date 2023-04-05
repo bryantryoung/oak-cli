@@ -1,0 +1,19 @@
+{
+  "name": "oak",
+  "version": "1.0.0",
+  "description": "A cli tool for nicely visualizing directories",
+  "main": "cli.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bryant Young",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "chalk-animation": "^2.0.3",
+    "chalk-rainbow": "^1.0.0",
+    "commander": "^10.0.0",
+    "fs-extra": "^11.1.1"
+  }
+}
