@@ -7,7 +7,6 @@ export const getRandomColor = () => {
     "FFFF00",
     "00FF00",
     "0000FF",
-
     "4B0082",
     "9400D3",
     "FF00FF",
@@ -20,9 +19,3 @@ export const getRandomColor = () => {
   const randomIndex = Math.floor(Math.random() * hexArr.length);
   return hexArr[randomIndex];
 };
-
-console.log(chalk.hex(getRandomColor())("Hello World"));
-console.log(chalk.hex(getRandomColor())("Hello World"));
-console.log(chalk.hex(getRandomColor())("Hello World"));
-console.log(chalk.hex(getRandomColor())("Hello World"));
-console.log(chalk.hex(getRandomColor())("Hello World"));

@@ -58,7 +58,9 @@ export const printDirectoryContents = ({
       depth % 2 === 0
         ? console.log(
             chalk.cyan(`${rootLine}${indent}${prefix}`),
-            isDir ? chalk.rgb(`${file}`, "blue") : chalk.gray(`${file}`)
+            isDir
+              ? chalk.redBright(`${file}`, "blue")
+              : chalk.greenBright(`${file}`)
           )
         : console.log(
             chalk.cyan(`${rootLine}${indent}${prefix}`),
