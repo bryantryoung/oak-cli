@@ -1,5 +1,3 @@
-import chalk from "chalk";
-
 export const getRandomColor = () => {
   const hexArr = [
     "FF0000",
