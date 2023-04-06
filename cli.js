@@ -12,25 +12,31 @@ let fileCount = 0;
 let color = false;
 let depth = 0;
 let maxDepth = Infinity;
-let dirColor = "";
-let fileColor = "";
 let rootDir;
 let depths = [];
 let prevDepths = [];
-const verticalLine = " |  ";
-const lastFileLine = " |__ ";
-const connectedFileLine = " |-- ";
+const verticalLine = " │  ";
+const lastFileLine = " └── ";
+const connectedFileLine = " ├── ";
 
 export const printDirectoryContents = ({
   directory,
   indent = "",
   exclude = "",
-  folders = false,
   depth,
   size,
 }) => {
   const contents = fs.readdirSync(directory);
-  if (contents.length > size) return;
+  if (contents.length > size) {
+    if (path.resolve(directory) === rootDir) {
+      console.log(
+        chalk.cyan(
+          "Make sure your size input is not smaller than the root directory size"
+        )
+      );
+    }
+    return;
+  }
 
   if (depth > maxDepth) return;
 
@@ -38,16 +44,18 @@ export const printDirectoryContents = ({
     if (exclude.includes(file)) return;
 
     let prefix = "";
-    let rootLine = "";
     depths = [];
 
     const fullPath = path.join(directory, file);
     const stats = fs.statSync(fullPath);
     const isDir = stats.isDirectory();
 
-    // to build the prefix you have to use a for loop that iterates through the depth and adds rootline, indent, and prefix every time to
-    // the totalPrefix string, then you can add the file name to the end of the totalPrefix string
-    for (let i = 0; i < depth; i++) {
+    // to build the prefix you have to use a for loop that iterates through the depth
+    // and adds verticalLine if we have not reached the end of a dir at that depth,
+    // according to the prevDepths array and add indent to prefix
+    // once we reach the current depth, we check if the file is the last file in the dir and
+    // alter the prefix accordingly, then log the prefix + filename to the console
+    for (let i = 0; i <= depth; i++) {
       if (depth === 0) {
         if (idx === contents.length - 1) {
           prefix = lastFileLine;
@@ -59,7 +67,7 @@ export const printDirectoryContents = ({
           continue;
         }
       }
-      if (i === depth - 1) {
+      if (i === depth) {
         if (idx === contents.length - 1) {
           prefix += lastFileLine;
           depths[i] = "last";
@@ -76,24 +84,34 @@ export const printDirectoryContents = ({
         prefix += `${verticalLine}  `;
         depths[i] = "connected";
       } else {
-        prefix += `    `;
+        prefix += `  `;
       }
       prefix += " ";
     }
     prevDepths = depths;
     if (color) {
       isDir
-        ? console.log(`${prefix}`, chalk.hex(getRandomColor())(`${file}/`))
-        : console.log(`${prefix}`, chalk.hex(getRandomColor())(`${file}`));
+        ? console.log(
+            chalk.hex(getRandomColor())(`${prefix}`),
+            chalk.hex(getRandomColor())(`${file}/`)
+          )
+        : console.log(
+            chalk.hex(getRandomColor())(`${prefix}`),
+            chalk.hex(getRandomColor())(`${file}`)
+          );
     } else {
       depth % 2 === 0
         ? console.log(
-            chalk.cyan(`${prefix}`),
-            isDir ? chalk.redBright(`${file}/`) : chalk.greenBright(`${file}`)
+            `${prefix}`,
+            isDir
+              ? chalk.hex("#ecb133")(`${file}/`)
+              : chalk.hex("#17a762")(`${file}`)
           )
         : console.log(
-            chalk.cyan(`${prefix}`),
-            isDir ? chalk.magentaBright(`${file}/`) : chalk.yellow(`${file}`)
+            `${prefix}`,
+            isDir
+              ? chalk.hex("#ff6b8c")(`${file}/`)
+              : chalk.hex("#ff3d37")(`${file}`)
           );
     }
 
@@ -117,9 +135,8 @@ export const printDirectoryContents = ({
 // 2. Get the options from the user
 // 3. assign options to variables
 // 4. if the user wants to print all files and directories, call printDirectoryContents with exclude = []
-// 5. if the user wants to print only directories, call printDirectoryContents with folders = true
-// 6. if the user wants to print with random colors, call printDirectoryContents with color = true
-// 7. otherwise, call printDirectoryContents with whatever is excluded - including default excludes - and the size and depth
+// 5. if the user wants to print with random colors, call printDirectoryContents with color = true
+// 6. otherwise, call printDirectoryContents with whatever is excluded - including default excludes - and the size and depth
 
 program
   .version("1.0.0")
@@ -132,7 +149,6 @@ program
   .option("-e, --exclude <s>", "Exclude folders matching the given pattern")
   .option("-d, --depth <n>", "Maximum depth to print", parseInt)
   .option("-s, --size <n>", "Maximum size directory to print", parseInt)
-  .option("-f, --folders", "Only print directories")
   .option("-c, --color", "Colorize output with random color scheme")
   .option("-a, --all", "Print all files and directories")
   .action((directory) => {
@@ -142,8 +158,8 @@ program
       let {
         exclude,
         depth: inputDepth,
-        size,
-        folders,
+        size: inputSize,
+
         color: chosenColor,
         all,
       } = program.opts();
@@ -155,10 +171,6 @@ program
         printDirectoryContents({ directory, exclude: [], depth });
         return;
       }
-      if (folders !== undefined) {
-        printDirectoryContents({ directory, exclude: [], depth });
-        return;
-      }
 
       const excludeArr = exclude
         ? defaultExclude.concat(exclude.split())
@@ -167,7 +179,7 @@ program
         printDirectoryContents({
           directory,
           exclude: excludeArr,
-          size: (size = Infinity),
+          size: inputSize ? inputSize : Infinity,
           depth,
         });
         return;
@@ -175,7 +187,7 @@ program
       printDirectoryContents({
         directory,
         exclude: excludeArr,
-        size: (size = Infinity),
+        size: inputSize ? inputSize : Infinity,
         depth,
       });
 
