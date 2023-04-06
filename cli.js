@@ -15,6 +15,11 @@ let maxDepth = Infinity;
 let dirColor = "";
 let fileColor = "";
 let rootDir;
+let depths = [];
+let prevDepths = [];
+const verticalLine = " |  ";
+const lastFileLine = " |__ ";
+const connectedFileLine = " |-- ";
 
 export const printDirectoryContents = ({
   directory,
@@ -34,37 +39,61 @@ export const printDirectoryContents = ({
 
     let prefix = "";
     let rootLine = "";
+    depths = [];
+
     const fullPath = path.join(directory, file);
     const stats = fs.statSync(fullPath);
     const isDir = stats.isDirectory();
 
-    if (idx === contents.length - 1) {
-      prefix = " └── ";
-    } else {
-      prefix = " ├── ";
+    // to build the prefix you have to use a for loop that iterates through the depth and adds rootline, indent, and prefix every time to
+    // the totalPrefix string, then you can add the file name to the end of the totalPrefix string
+    for (let i = 0; i < depth; i++) {
+      if (depth === 0) {
+        if (idx === contents.length - 1) {
+          prefix = lastFileLine;
+          depths[i] = "last";
+          continue;
+        } else {
+          prefix = connectedFileLine;
+          depths[i] = "connected";
+          continue;
+        }
+      }
+      if (i === depth - 1) {
+        if (idx === contents.length - 1) {
+          prefix += lastFileLine;
+          depths[i] = "last";
+          break;
+        } else {
+          prefix += connectedFileLine;
+          depths[i] = "connected";
+          break;
+        }
+      }
+      // check if file at current depth is last file in dir, if not, add prefix of │
+
+      if (prevDepths[i] === "connected") {
+        prefix += `${verticalLine}  `;
+        depths[i] = "connected";
+      } else {
+        prefix += `    `;
+      }
+      prefix += " ";
     }
-    // check if this is last file in dir, if so add prefix of └──
-    // if not add prefix of ├──
-    // need to check if we are at the root dir, if not, add the base prefix of |
-    if (rootDir !== path.resolve(directory)) {
-      rootLine = " │  ";
-    }
+    prevDepths = depths;
     if (color) {
-      console.log(
-        `${rootLine}${indent}${prefix}`,
-        chalk.hex(getRandomColor())(`${file}`)
-      );
+      isDir
+        ? console.log(`${prefix}`, chalk.hex(getRandomColor())(`${file}/`))
+        : console.log(`${prefix}`, chalk.hex(getRandomColor())(`${file}`));
     } else {
       depth % 2 === 0
         ? console.log(
-            chalk.cyan(`${rootLine}${indent}${prefix}`),
-            isDir
-              ? chalk.redBright(`${file}`, "blue")
-              : chalk.greenBright(`${file}`)
+            chalk.cyan(`${prefix}`),
+            isDir ? chalk.redBright(`${file}/`) : chalk.greenBright(`${file}`)
           )
         : console.log(
-            chalk.cyan(`${rootLine}${indent}${prefix}`),
-            isDir ? chalk.magentaBright(`${file}`) : chalk.yellow(`${file}`)
+            chalk.cyan(`${prefix}`),
+            isDir ? chalk.magentaBright(`${file}/`) : chalk.yellow(`${file}`)
           );
     }
 
@@ -72,7 +101,7 @@ export const printDirectoryContents = ({
       dirCount++;
       printDirectoryContents({
         directory: fullPath,
-        indent: `  ${indent}`,
+        indent: `${indent}`,
         exclude,
         depth: depth + 1,
         size,
@@ -96,7 +125,9 @@ program
   .version("1.0.0")
   .arguments("<directory>")
   .description(
-    "Print a colorful tree representation of the structure of a given directory"
+    chalk.greenBright(
+      "Print a colorful tree representation of the structure of a given directory"
+    )
   )
   .option("-e, --exclude <s>", "Exclude folders matching the given pattern")
   .option("-d, --depth <n>", "Maximum depth to print", parseInt)
@@ -150,7 +181,9 @@ program
 
       console.log(chalk.green(`${dirCount} folders, ${fileCount} files \n`));
     } catch (error) {
-      console.error(`Error printing directory structure: ${error.message}`);
+      console.error(
+        chalk.redBright(`Error printing directory structure: ${error.message}`)
+      );
     }
   });
 
