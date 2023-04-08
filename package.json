@@ -1,5 +1,5 @@
 {
-  "name": "oak",
+  "name": "@bry/oak",
   "version": "1.0.0",
   "description": "A cli tool for nicely visualizing directories",
   "main": "cli.js",

@@ -35,6 +35,7 @@ export const printDirectoryContents = ({
         )
       );
     }
+    console.log("size exceeded, dont print dir contents");
     return;
   }
 
@@ -159,11 +160,26 @@ program
         exclude,
         depth: inputDepth,
         size: inputSize,
-
         color: chosenColor,
         all,
       } = program.opts();
 
+      if (all !== undefined && exclude !== undefined) {
+        console.log(
+          chalk.redBright(
+            "You cannot use the --all option with the --exclude option"
+          )
+        );
+        return;
+      }
+      if (all !== undefined && inputSize !== undefined) {
+        console.log(
+          chalk.redBright(
+            "You cannot use the --all option with the --size option"
+          )
+        );
+        return;
+      }
       if (chosenColor) color = chosenColor;
       if (inputDepth !== undefined) maxDepth = inputDepth;
 
