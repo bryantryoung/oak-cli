@@ -181,7 +181,7 @@ program
         return;
       }
       if (chosenColor) color = chosenColor;
-      if (inputDepth !== undefined) maxDepth = inputDepth;
+      if (inputDepth !== undefined) maxDepth = Math.floor(Math.abs(inputDepth));
 
       if (all !== undefined) {
         printDirectoryContents({ directory, exclude: [], depth });
@@ -207,7 +207,7 @@ program
         depth,
       });
 
-      console.log(chalk.green(`${dirCount} folders, ${fileCount} files \n`));
+      console.log(chalk.cyan(`${dirCount} folders, ${fileCount} files \n`));
     } catch (error) {
       console.error(
         chalk.redBright(`Error printing directory structure: ${error.message}`)
