@@ -1,6 +1,6 @@
-# 🌳 Oak - A CLI tool for visualizing directories with lots of color!
+# 🌳 Oak - A CLI tool for visualizing directories with lots of color
 
-## Oak CLI is a tool I made for fun in my free time to familiarize myself with publishing packages publicly to npm. Feel free to submit a PR or open an issue if you find a bug or have a feature request!
+## Oak is a tool I made for fun in my free time to familiarize myself with publishing packages publicly to npm. Feel free to submit a PR or open an issue if you find a bug or have a feature request!
 
 Install the package globally with either yarn or npm:
 
