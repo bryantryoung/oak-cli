@@ -217,7 +217,7 @@ program
 
 program.on("--help", () => {
   console.log("Example:");
-  console.log("  $ directory-structure ./my-folder");
+  console.log("  $ oak ./my-folder");
 });
 
 program.parse(process.argv);

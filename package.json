@@ -1,5 +1,5 @@
 {
-  "name": "@bry/oak",
+  "name": "@bryoung/oak",
   "version": "1.0.0",
   "description": "A cli tool for nicely visualizing directories",
   "main": "cli.js",
@@ -16,5 +16,22 @@
     "commander": "^10.0.0",
     "fs-extra": "^11.1.1"
   },
-  "bin": "cli.js"
+  "bin": {
+    "oak": "cli.js"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lifeofbry19/oak-cli.git"
+  },
+  "keywords": [
+    "Directory",
+    "Visualizer",
+    "Filesystem",
+    "Tree"
+  ],
+  "bugs": {
+    "url": "https://github.com/lifeofbry19/oak-cli/issues"
+  },
+  "homepage": "https://github.com/lifeofbry19/oak-cli#readme"
 }
