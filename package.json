@@ -22,7 +22,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lifeofbry19/oak-cli.git"
+    "url": "git+https://github.com/bryantryoung/oak-cli.git"
   },
   "keywords": [
     "Directory",
@@ -31,7 +31,7 @@
     "Tree"
   ],
   "bugs": {
-    "url": "https://github.com/lifeofbry19/oak-cli/issues"
+    "url": "https://github.com/bryantryoung/oak-cli/issues"
   },
-  "homepage": "https://github.com/lifeofbry19/oak-cli#readme"
+  "homepage": "https://github.com/bryantryoung/oak-cli#readme"
 }
